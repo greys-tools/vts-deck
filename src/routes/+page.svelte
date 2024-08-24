@@ -14,20 +14,17 @@
 	let editing = "";
 	let open = false;
 	let error = ""
+
 	const handleClick = (e, slot) => {
-		e.target.classList.add('click');
-		setTimeout(() => e.target.classList.remove('click'), 250)
 		if($editMode) {
 			editing = slot;
-			console.log(editing)
 			open = true;
 			error = "";
 		} else {
-			//...
+			e.target.classList.add('click');
+			setTimeout(() => e.target.classList.remove('click'), 250)
 		}
 	}
-
-	$: console.log($buttons);
 </script>
 
 <div class="container">
@@ -40,7 +37,7 @@
 		<div id="grid">
 			{#each {length: 20} as _,i (i)}
 				{#if $buttons?.get(`slot-${i+1}`)}
-					<Button data={$buttons.get(`slot-${i+1}`)} on:click={(e) => handleClick(e, `slot-${i+1}`)} />
+					<Button slot={`slot-${i+1}`} data={$buttons.get(`slot-${i+1}`)} on:click={(e) => handleClick(e, `slot-${i+1}`)} />
 				{:else}
 					<div class="box" on:click={(e) => handleClick(e, `slot-${i+1}`)}>
 					</div>

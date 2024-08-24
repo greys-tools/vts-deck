@@ -24,19 +24,22 @@ export default class PluginClient {
 
 		this.ws.on('open', async () => {
 			this.open = true;
-			while(!this.ready) {
+
+			this.ws.on('authed', () => clearInterval(this.reconnect));
+			this.reconnect = setInterval(async () => {
 				console.log('Attempting connection...');
-				await sleep(2_000);
+				if(this.ready) clearInterval(this.reconnect);
 				try {
-					await this.auth()	
+					await this.auth();
 				} catch(e) {
 					console.error("Couldn't connect plugin client: ", e)
-					continue;
+					return;
 				}
 
 				console.log("Plugin connected.");
-				break;
-			}
+				clearInterval(this.reconnect)
+				this.ws.emit('ready');
+			}, 15_000)
 		})
 	}
 
@@ -94,6 +97,7 @@ export default class PluginClient {
 		return new Promise((res, rej) => {
 			const messageHandler = async (msg) => {
 				msg = this.decodeMessage(msg);
+				console.log(msg);
 				if(msg.requestID !== id) return;
 
 				if(this.debug) console.log(`[debug] Received message with ID ${id}`);
