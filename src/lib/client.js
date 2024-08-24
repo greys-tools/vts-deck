@@ -16,7 +16,7 @@ const client = new PluginClient(ws, {
 	apiName: Constants.apiName,
 	pluginDeveloper,
 	pluginName,
-	pluginIcon: `${__dirname}/../../icon.png`,
+	iconFile: `${__dirname}/../../icon.png`,
 	debug: true
 });
 

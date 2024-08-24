@@ -3,10 +3,11 @@ import { readFileSync } from 'fs';
 import * as Constants from '$lib/constants';
 import HotkeyManager from '$lib/plugin/managers/HotkeyManager';
 
-import {
-	PLUGIN_NAME as pluginName,
-	PLUGIN_DEVELOPER as pluginDeveloper
-} from '$env/static/private';
+const sleep = async (ms = 500) => {
+	return new Promise(res => {
+		setTimeout(() => res(), ms)
+	})
+}
 
 export default class PluginClient {
 	constructor(ws, data = { apiVersion: "1.0", apiName: "VTubeStudioPublicAPI" }) {
@@ -15,22 +16,33 @@ export default class PluginClient {
 		this.apiName = data.apiName;
 		this.debug = data.debug ?? false;
 
-		// this.pluginIcon = readFileSync(data.pluginIcon).toString('base64');
-		this.pluginName = data.pluginName ?? pluginName;
-		this.pluginDeveloper = data.pluginDeveloper ?? pluginDeveloper;
+		this.iconFile = data.iconFile;
+		this.pluginName = data.pluginName;
+		this.pluginDeveloper = data.pluginDeveloper;
 
 		this.hotkeys = new HotkeyManager(this);
 
 		this.ws.on('open', async () => {
 			this.open = true;
-			await this.auth()
-			.then(() => console.log('Plugin client connected.'))
-			.catch(e => console.error("Couldn't connect plugin client: ", e));
+			while(!this.ready) {
+				console.log('Attempting connection...');
+				await sleep(2_000);
+				try {
+					await this.auth()	
+				} catch(e) {
+					console.error("Couldn't connect plugin client: ", e)
+					continue;
+				}
+
+				console.log("Plugin connected.");
+				break;
+			}
 		})
 	}
 
 	async auth() {
 		if(this.token) return;
+		this.pluginIcon = readFileSync(this.iconFile).toString('base64');
 		let data = {
 			pluginIcon: this.pluginIcon,
 			pluginName: this.pluginName,
@@ -38,6 +50,7 @@ export default class PluginClient {
 		}
 		let reqID = await this.sendRequest('auth-token', data);
 		let msg = await this.awaitMessage(reqID);
+		if(this.debug) console.log(`[debug] Auth message: `, msg);
 		let token = msg.data.authenticationToken;
 
 		reqID = await this.sendRequest('auth', {

@@ -2,7 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-body, .html {
-	@apply dark:bg-gray-900;
+* {
+	box-sizing: border-box;
+}
+
+body, html {
+	height: 100vh;
 	@apply bg-white;
+	@apply dark:bg-gray-900;
+}
+
+.box {
+	@apply border-2;
+	@apply border-gray-400;
+	@apply dark:border-gray-500;
+	@apply dark:bg-gray-700;
+	@apply text-black;
+	@apply dark:text-white;
+	@apply hover:border-8;
+	@apply flex;
+	@apply flex-col;
+	@apply justify-center;
+	@apply items-center;
+	@apply m-2;
+	@apply rounded-lg;
+
+	@apply cursor-pointer;
+	@apply transition-all;
+}
+
+.box button {
+	@apply p-2;
+	@apply w-full;
+	@apply h-full;
+}
+
+.click {
+	animation: click .25s;
+}
+
+@keyframes click {
+	from {
+		transform: scale(.9);
+	}
+
+	to {
+		transform: scale(1);
+	}
+}
+
+html.dark, body.dark {
+	--cp-bg-color: #333;
+	--cp-border-color: white;
+	--cp-text-color: white;
+	--cp-input-color: #555;
+	--cp-button-hover-color: #777;
 }
