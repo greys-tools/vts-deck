@@ -1,35 +1,78 @@
 {
-	"name": "interface",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview"
-	},
-	"devDependencies": {
-		"@iconify/json": "^2.2.239",
-		"@iconify/tailwind": "^1.1.2",
-		"@sveltejs/adapter-auto": "^3.0.0",
-		"@sveltejs/adapter-node": "^5.2.2",
-		"@sveltejs/kit": "^2.0.0",
-		"@sveltejs/vite-plugin-svelte": "^3.0.0",
-		"autoprefixer": "^10.4.20",
-		"axios": "^1.7.4",
-		"flowbite": "^2.5.1",
-		"flowbite-svelte": "^0.46.15",
-		"flowbite-svelte-icons": "^1.6.1",
-		"postcss": "^8.4.41",
-		"svelte": "^4.2.7",
-		"svelte-awesome-color-picker": "^3.1.4",
-		"tailwindcss": "^3.2.0",
-		"unplugin-icons": "^0.19.2",
-		"vite": "^5.0.3",
-		"ws": "^8.18.0"
-	},
-	"type": "module",
-	"dependencies": {
-		"dotenv": "^16.4.5",
-		"express": "^4.19.2"
+  "name": "vts-deck",
+  "productName": "VTS Deck",
+  "author": "greysdawn",
+  "description": "VTS Deck",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.cjs",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "electron .",
+    "app:dir": "electron-builder --dir",
+  	"app:dist": "electron-builder"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.6.1",
+    "@electron-forge/maker-deb": "^7.6.1",
+    "@electron-forge/maker-rpm": "^7.6.1",
+    "@electron-forge/maker-squirrel": "^7.6.1",
+    "@electron-forge/maker-zip": "^7.6.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.1",
+    "@electron-forge/plugin-fuses": "^7.6.1",
+    "@electron/fuses": "^1.8.0",
+    "@iconify/json": "^2.2.239",
+    "@iconify/tailwind": "^1.1.2",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/adapter-node": "^5.2.2",
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "autoprefixer": "^10.4.20",
+    "axios": "^1.7.4",
+    "electron": "^34.0.2",
+    "electron-builder": "^25.1.8",
+    "flowbite": "^2.5.1",
+    "flowbite-svelte": "^0.46.15",
+    "flowbite-svelte-icons": "^1.6.1",
+    "postcss": "^8.4.41",
+    "svelte": "^4.2.7",
+    "svelte-awesome-color-picker": "^3.1.4",
+    "tailwindcss": "^3.2.0",
+    "unplugin-icons": "^0.19.2",
+    "vite": "^5.0.3",
+    "ws": "^8.18.0"
+  },
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "electron-squirrel-startup": "^1.0.1",
+    "express": "^4.19.2"
+  },
+  "build": {
+	  "appId": "com.greysdawn.vtsdeck",
+	  "mac": {
+	    "category": "public.app-category.utilities"
+	  },
+    "asar": "false",
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+      "!src/",
+      "!**/static/*",
+      "build/"
+    ]
 	}
 }

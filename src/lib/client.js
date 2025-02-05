@@ -1,22 +1,26 @@
-import {
-	PLUGIN_DEVELOPER as pluginDeveloper,
-	PLUGIN_NAME as pluginName 
-} from '$env/static/private';
 import WebSocket from 'ws';
 import PluginClient from '$lib/plugin/client';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import * as Constants from '$lib/constants';
+import { readFileSync } from 'fs';
+import {
+	apiVersion,
+	apiName,
+	pluginDeveloper,
+	pluginName,
+	pluginIcon,
+	wsUrl,
+} from '$lib/constants';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const ws = new WebSocket('ws://0.0.0.0:8001');
+const ws = new WebSocket(wsUrl);
 const client = new PluginClient(ws, {
-	apiVersion: Constants.apiVersion,
-	apiName: Constants.apiName,
+	apiVersion,
+	apiName,
 	pluginDeveloper,
 	pluginName,
-	iconFile: `${__dirname}/../../icon.png`,
+	pluginIcon,
 	debug: true
 });
 

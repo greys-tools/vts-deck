@@ -16,7 +16,7 @@ export default class PluginClient {
 		this.apiName = data.apiName;
 		this.debug = data.debug ?? false;
 
-		this.iconFile = data.iconFile;
+		this.pluginIcon = data.pluginIcon;
 		this.pluginName = data.pluginName;
 		this.pluginDeveloper = data.pluginDeveloper;
 
@@ -45,7 +45,6 @@ export default class PluginClient {
 
 	async auth() {
 		if(this.token) return;
-		this.pluginIcon = readFileSync(this.iconFile).toString('base64');
 		let data = {
 			pluginIcon: this.pluginIcon,
 			pluginName: this.pluginName,

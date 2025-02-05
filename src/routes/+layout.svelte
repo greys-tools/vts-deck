@@ -6,7 +6,8 @@
     Navbar,
     NavBrand,
 
-    Toggle
+    Toggle,
+    Button
   } from 'flowbite-svelte';
 
   import {
@@ -45,18 +46,25 @@
   </script>
 </svelte:head>
 
-<Navbar fluid class="shadow-black drop-shadow-md dark:bg-gray-800">
+<Navbar fluid class="shadow-black drop-shadow-md dark:bg-gray-800" style="app-region: drag">
+  <div class="flex justify-start" style="app-region: no-drag">
   <NavBrand>
-    VTS Deck {mode ? "(editing active)" : ""}
+    VTS Deck
   </NavBrand>
-  <div class="flex flex-row">
+  <div class="flex flex-row items-center">
     <DarkMode />
-    <Toggle on:click={() => {
+    <Button color="alternative" class="p-3 border-none" on:click={() => {
       if(mode) save();
       else edit();
-    }} value={mode}>
-    </Toggle>
+    }}>
+      {#if mode}
+        <Save />
+      {:else}
+        <Edit />
+      {/if}
+    </Button>
   </div>
+</div>
 </Navbar>
 
 <slot />
