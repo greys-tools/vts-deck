@@ -1,8 +1,6 @@
 <script>
   import "../app.css";
   import {
-    DarkMode,
-
     Navbar,
     NavBrand,
 
@@ -15,10 +13,16 @@
     update
   } from '$lib/stores/editMode';
 
+  import SettingsModal from '$lib/components/SettingsModal.svelte';
+
+  import Settings from '~icons/ic/round-settings';
   import Edit from '~icons/material-symbols/edit';
   import Save from '~icons/material-symbols/save';
+  import Logo from '$lib/assets/icon.png';
 
   $: mode = $editMode;
+
+  let open = false;
 
   function edit() {
     update(true);
@@ -28,6 +32,10 @@
   function save() {
     update(false);
     console.log($editMode)
+  }
+
+  function open() {
+    open = true;
   }
 
   $: console.log(editMode, $editMode)
@@ -49,11 +57,17 @@
 <Navbar fluid class="shadow-black drop-shadow-md dark:bg-gray-800" style="app-region: drag">
   <div class="flex justify-start" style="app-region: no-drag">
   <NavBrand>
-    VTS Deck
+    <img src={Logo} alt="logo" class="size-6 mr-2" />
+    <span>VTS Deck</span>
   </NavBrand>
   <div class="flex flex-row items-center">
-    <DarkMode />
-    <Button color="alternative" class="p-3 border-none" on:click={() => {
+    <Button color="alternative" class="p-3 border-none ml-2" on:click={() => {
+      if(mode) save();
+      else edit();
+    }}>
+      <Settings />
+    </Button>
+    <Button color="alternative" class="p-3 border-none ml-2" on:click={() => {
       if(mode) save();
       else edit();
     }}>
@@ -66,5 +80,7 @@
   </div>
 </div>
 </Navbar>
+
+<SettingsModal bind:open />
 
 <slot />
