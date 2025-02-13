@@ -20,25 +20,22 @@
   import Save from '~icons/material-symbols/save';
   import Logo from '$lib/assets/icon.png';
 
-  $: mode = $editMode;
+  let { children } = $props();
 
-  let open = false;
+  let mode = $derived($editMode);
+  let open = $state(false);
 
   function edit() {
     update(true);
-    console.log($editMode)
   }
 
   function save() {
     update(false);
-    console.log($editMode)
   }
 
-  function open() {
+  function openModal() {
     open = true;
   }
-
-  $: console.log(editMode, $editMode)
 </script>
 
 <svelte:head>
@@ -61,13 +58,10 @@
     <span>VTS Deck</span>
   </NavBrand>
   <div class="flex flex-row items-center">
-    <Button color="alternative" class="p-3 border-none ml-2" on:click={() => {
-      if(mode) save();
-      else edit();
-    }}>
+    <Button color="alternative" class="p-3 border-none ml-2" onclick={() => openModal()}>
       <Settings />
     </Button>
-    <Button color="alternative" class="p-3 border-none ml-2" on:click={() => {
+    <Button color="alternative" class="p-3 border-none ml-2" onclick={() => {
       if(mode) save();
       else edit();
     }}>
@@ -83,4 +77,4 @@
 
 <SettingsModal bind:open />
 
-<slot />
+{@render children()}

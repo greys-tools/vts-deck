@@ -4,16 +4,20 @@
 	import { browser } from '$app/environment';
 
 	import { buttons, update } from '$lib/stores/buttons';
+	import { settings } from '$lib/stores/settings';
 	import { editMode } from '$lib/stores/editMode';
 
 	import Button from '$lib/components/Button.svelte';
 	import ButtonModal from '$lib/components/ButtonModal.svelte';
 
-	export let data = {};
+	/** @type {{data?: any}} */
+	let { data = {} } = $props();
 
-	let editing = "";
-	let open = false;
-	let error = ""
+	let editing = $state("");
+	let open = $state(false);
+	let error = $state("");
+
+	let view = $derived.by(() => $settings.get('view') ?? {x: 5, y: 5});
 
 	const handleClick = (e, slot) => {
 		if($editMode) {
@@ -34,14 +38,21 @@
 			<h3 class="text-xl text-black dark:text-white">Check your VTube Studio client to authorize the connection, then reload the page to get started</h3>
 		</div>
 	{:else}
-		<div id="grid">
-			{#each {length: 20} as _,i (i)}
-				{#if $buttons?.get(`slot-${i+1}`)}
-					<Button slot={`slot-${i+1}`} data={$buttons.get(`slot-${i+1}`)} on:click={(e) => handleClick(e, `slot-${i+1}`)} />
-				{:else}
-					<div class="box" on:click={(e) => handleClick(e, `slot-${i+1}`)}>
-					</div>
-				{/if}
+		<div class="w-full h-full flex flex-col items-center justify-center">
+			{#each { length: view.y } as _,j (j)}
+				<div class="flex items-center justify-center w-full">
+					{#each { length: view.x } as _,i (i)}
+						{#if $buttons?.get(`slot-${(j * view.x) + (i+1)}`)}
+							<Button slot={`slot-${(j * view.x) + (i+1)}`}
+								data={$buttons.get(`slot-${(j * view.x) + (i+1)}`)} 
+								on:click={(e) => handleClick(e, `slot-${(j * view.x) + (i+1)}`)} 
+							/>
+						{:else}
+							<div class="box" onclick={(e) => handleClick(e, `slot-${(j * view.x) + (i+1)}`)}>
+							</div>
+						{/if}
+					{/each}
+				</div>
 			{/each}
 		</div>
 	{/if}

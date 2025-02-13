@@ -13,13 +13,13 @@ body, html {
 }
 
 .box {
-	@apply border-2;
-	@apply border-gray-400;
-	@apply dark:border-gray-500;
+	@apply outline-2;
+	@apply outline-gray-400;
+	@apply dark:outline-gray-500;
 	@apply dark:bg-gray-700;
 	@apply text-black;
 	@apply dark:text-white;
-	@apply hover:border-8;
+	@apply hover:outline-8;
 	@apply flex;
 	@apply flex-col;
 	@apply justify-center;
@@ -29,6 +29,13 @@ body, html {
 
 	@apply cursor-pointer;
 	@apply transition-all;
+
+	aspect-ratio: 1 / 1;
+	width: 10%;
+	max-width: 150px;
+	flex-grow: 1;
+	flex-shrink: 1;
+	outline-style: solid;
 }
 
 .box button {

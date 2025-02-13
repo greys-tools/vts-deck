@@ -1,5 +1,5 @@
 <script>
-	import {
+  import {
     Modal,
     Button,
     ButtonGroup,
@@ -24,10 +24,12 @@
   import LightMode from '~icons/ic/round-light-mode';
   import AutoMode from '~icons/ic/round-auto-mode';
 
-  let theme = $derived($settings.get('theme'));
-  let view = $derived($settings.get('view'));
-
   let { open = $bindable(), error } = $props();
+
+  $inspect(settings, $settings);
+
+  let theme = $derived.by(() => $settings.get('theme'));
+  let view = $derived.by(() => $settings.get('view') ?? {x: 5, y: 5});
 
   const save = (key, val) => {
     update(key, val);
@@ -44,40 +46,47 @@
         <ButtonGroup>
           <Button
             color={theme == 'dark' ? 'blue' : 'alternative'}
-            on:click={() => save('theme', 'dark')}
+            onclick={() => save('theme', 'dark')}
           >
-          	<span class="sr-only">dark mode</span>
-          	<DarkMode />
+            <span class="sr-only">dark mode</span>
+            <DarkMode />
           </Button>
           <Button
             color={theme == 'light' ? 'blue' : 'alternative'}
-            on:click={() => save('theme', 'light')}
+            onclick={() => save('theme', 'light')}
           >
-          	<span class="sr-only">light mode</span>
-          	<LightMode />
+            <span class="sr-only">light mode</span>
+            <LightMode />
           </Button>
           <Button
             color={theme == 'system' ? 'blue' : 'alternative'}
-            on:click={() => save('theme', 'system')}
+            onclick={() => save('theme', 'system')}
           >
-          	<span class="sr-only">auto mode</span>
-          	<AutoMode />
+            <span class="sr-only">auto mode</span>
+            <AutoMode />
           </Button>
         </ButtonGroup>
       </div>
 
-      <div id="view-settings" class="w-full flex flex-row items-center justify-between mb-2">
+      <div id="view-settings" class="w-full flex flex-col items-start justify-between mb-2">
         <p>View</p>
         <div>
-          <Label for="x-range">Columns (X Amount)</Label>
-          <Range min=1 max=10 size="lg" value={view.x ?? 5}
-            on:change={(e) => console.log(e)}
-          />
-          <Label for="x-range">Rows (Y Amount)</Label>
-          <Range min=1 max=10 size="lg" value={view.y ?? 5}
-            on:change={(e) => console.log(e)}
-          />
-        </div>
+          <Label for="x-range">Columns (X/Horizontal Amount)</Label>
+          <div class="flex items-center justify-center">
+            <span>5</span>
+            <Range min=5 max=10 size="md" value={view.x ?? 5} class="mx-2" list="values"
+              onchange={(e) => save('view', {...view, x: parseInt(e.target.value) })}
+            />
+            <span>10</span>
+            <datalist id="values">
+              <option value="5"></option>
+              <option value="6"></option>
+              <option value="7"></option>
+              <option value="8"></option>
+              <option value="9"></option>
+              <option value="10"></option>
+            </datalist>
+          </div>
       </div>
     </div>
 </Modal>

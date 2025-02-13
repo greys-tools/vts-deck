@@ -1,5 +1,7 @@
 <script>
-	import {
+  import { run } from 'svelte/legacy';
+
+  import {
     Modal,
     Button,
     ButtonGroup,
@@ -21,19 +23,25 @@
   import { enhance } from '$app/forms';
   import { buttons, update, remove } from '$lib/stores/buttons';
 
-	export let open;
-  export let error;
-  export let item;
-  export let hotkeys = [];
+  /** @type {{open: any, error: any, item: any, hotkeys?: any}} */
+  let {
+    open = $bindable(),
+    error,
+    item,
+    hotkeys = []
+  } = $props();
 
-  let search = '';
-  let data;
+  let search = $state('');
+  let data = $state();
 
-  $: if(open && !data) data = $buttons.get(item) ?? { name: '', color: '', hotkeys: [], toggle: false }
-  $: console.log(data);
+  run(() => {
+    if(open && !data) {
+      data = $buttons.get(item) ?? { name: '', color: '', hotkeys: [], toggle: false }
+    }
+  });
 
-  $: unused = hotkeys.filter(x => !data?.hotkeys?.find(h => h.id == x.id));
-  $: filtered = unused.filter(x => search?.length ? x.name.toLowerCase().includes(search) : true);
+  let unused = $derived.by(() => hotkeys.filter(x => !data?.hotkeys?.find(h => h.id == x.id)));
+  let filtered = $derived.by(() => unused.filter(x => search?.length ? x.name.toLowerCase().includes(search) : true));
 
   const save = () => {
     update(item, data);
@@ -83,9 +91,11 @@
           Add a hotkey
         </Button>
         <Dropdown>
-          <div slot="header" class="p-4">
-            <Search size="md" bind:value={search}/>
-          </div>
+          {#snippet header()}
+                    <div  class="p-4">
+              <Search size="md" bind:value={search}/>
+            </div>
+                  {/snippet}
           {#each filtered as hk (hk.id)}
             <DropdownItem on:click={() => data.hotkeys = [...data.hotkeys, { name: hk.name, id: hk.id }]}>
               {hk.name}

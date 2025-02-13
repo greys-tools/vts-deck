@@ -6,6 +6,7 @@ if(browser) {
 	if(('buttons' in localStorage)) {
 		var item = localStorage.getItem('buttons')
 		var data = JSON.parse(item);
+		console.log(data);
 		for(var k in data) {
 			tmp.set(k, data[k]);
 		}
