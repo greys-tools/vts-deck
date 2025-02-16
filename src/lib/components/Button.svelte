@@ -6,7 +6,12 @@
 	import { editMode } from '$lib/stores/editMode';
 	import { toggles, update } from '$lib/stores/toggles';
 	/** @type {{data: any, slot: any}} */
-	let { data, slot, dataID } = $props();
+	let {
+		data,
+		slot,
+		dataID,
+		shown
+	} = $props();
 	dataID = dataID.toString();
 	slot = slot.toString
 
@@ -40,7 +45,8 @@
   class="box"
   style={
   	(data?.color ? `background-color: ${data.color};` : '') +
-  	(data?.toggle ? `outline-color: ${toggled ? '#aaffaa' : '#ffaaaa'};` : '')
+  	(data?.toggle ? `outline-color: ${toggled ? '#aaffaa' : '#ffaaaa'};` : '') +
+  	(shown ? '' : 'display: none;')
   }
   action="?/send"
   method="POST"

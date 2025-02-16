@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { invalidateAll, goto } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import { nanoid } from 'nanoid';
 
 	import { buttons } from '$lib/stores/buttons';
 	import { slots } from '$lib/stores/slots';
@@ -20,7 +21,6 @@
 
 	let view = $derived.by(() => $settings.get('view') ?? {x: 5, y: 5});
 	let sort = $derived.by(() => $settings.get('sort'));
-	console.log($slots);
 
 	const handleClick = (e, slot = "", button = "") => {
 		if($editMode) {
@@ -54,7 +54,6 @@
 
 		return {
 			update: (data) => {
-				console.log(data);
 				swap.option('disabled', data.disabled);
 			},
 			destroy: () => {
@@ -86,17 +85,20 @@
 				then reload the page to get started
 			</h3>
 		</div>
+	{:else if !sort?.[0]}
+		<div></div>
 	{:else}
 		<div id="grid" use:swappable={{ disabled: !$editMode }}
 			class="w-full h-full flex flex-col items-center justify-center"
 			style={gridStyle}
 		>
-			{#each { length: view.x * view.y } as _, i (`${i}`)}
+			{#each { length: 50 } as _, i (`${i}`)}
 				{@const slot = `${i}`}
 				{@const btnID = $slots?.get(slot)}
 				<Button {slot}
 					dataID={slot}
 					data={$buttons?.get(btnID)} 
+					shown={sort.indexOf(`${i}`) < view.x * view.y ? true : false}
 					on:click={(e) => handleClick(e, slot, btnID)} 
 				/>
 			{/each}
