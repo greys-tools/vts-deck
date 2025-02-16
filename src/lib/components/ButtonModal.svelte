@@ -19,24 +19,36 @@
     Search
   } from 'flowbite-svelte';
   import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
+  import { nanoid } from 'nanoid';
+
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
   import { buttons, update, remove } from '$lib/stores/buttons';
+  import { slots, update as updateSlot, remove as removeSlot } from '$lib/stores/slots';
 
   /** @type {{open: any, error: any, item: any, hotkeys?: any}} */
   let {
     open = $bindable(),
     error,
-    item,
-    hotkeys = []
+    item = $bindable(),
+    hotkeys = [],
+    slot
   } = $props();
+  slot = `${slot}`;
 
   let search = $state('');
   let data = $state();
 
   run(() => {
     if(open && !data) {
-      data = $buttons.get(item) ?? { name: '', color: '', hotkeys: [], toggle: false }
+      if(item) data = $buttons.get(item);
+      else data = {
+        id: nanoid(),
+        name: '',
+        color: '',
+        hotkeys: [],
+        toggle: false
+      }
     }
   });
 
@@ -44,7 +56,11 @@
   let filtered = $derived.by(() => unused.filter(x => search?.length ? x.name.toLowerCase().includes(search) : true));
 
   const save = () => {
-    update(item, data);
+    if(item) update(item, data);
+    else {
+      update(data.id, data);
+      updateSlot(slot, data.id);
+    }
     close();
   }
 
@@ -54,14 +70,20 @@
   }
 
   const clear = () => {
-    remove(item);
+    if(item) {
+      removeSlot(slot);
+      remove(item);
+    } else {
+      removeSlot(slot);
+      remove(data.id);
+    }
     close();
   }
 </script>
 
 <Modal bind:open={open} size="sm" autoclose={false} outsideclose={false} dismissable={false} class="w-full min-h-96">
   <div class="flex flex-shrink-0 flex-col justify-between">
-    <h1 class="mb-4 text-2xl font-medium text-gray-900 dark:text-white flex-shrink-0 flex-grow-0">Edit Button in Slot {item.replace('slot-', '')}</h1>
+    <h1 class="mb-4 text-2xl font-medium text-gray-900 dark:text-white flex-shrink-0 flex-grow-0">Edit Button in Slot {slot}</h1>
     {#if error}
       <p class='text-red-500 dark:text-red-300'>Error: {error}</p>
     {/if}
@@ -92,10 +114,10 @@
         </Button>
         <Dropdown>
           {#snippet header()}
-                    <div  class="p-4">
+            <div  class="p-4">
               <Search size="md" bind:value={search}/>
             </div>
-                  {/snippet}
+          {/snippet}
           {#each filtered as hk (hk.id)}
             <DropdownItem on:click={() => data.hotkeys = [...data.hotkeys, { name: hk.name, id: hk.id }]}>
               {hk.name}
@@ -117,6 +139,3 @@
     </div>
   </div>
 </Modal>
-
-<style>
-</style>

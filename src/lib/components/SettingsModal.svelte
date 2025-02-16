@@ -26,8 +26,6 @@
 
   let { open = $bindable(), error } = $props();
 
-  $inspect(settings, $settings);
-
   let theme = $derived.by(() => $settings.get('theme'));
   let view = $derived.by(() => $settings.get('view') ?? {x: 5, y: 5});
 

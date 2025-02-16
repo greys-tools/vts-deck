@@ -1,3 +1,5 @@
+// saves buttons and maps to button ids
+
 import { writable, get } from 'svelte/store';
 import { browser } from '$app/environment';
 

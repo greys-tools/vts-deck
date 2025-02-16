@@ -6,7 +6,9 @@
 	import { editMode } from '$lib/stores/editMode';
 	import { toggles, update } from '$lib/stores/toggles';
 	/** @type {{data: any, slot: any}} */
-	let { data, slot } = $props();
+	let { data, slot, dataID } = $props();
+	dataID = dataID.toString();
+	slot = slot.toString
 
 	function styles() {
 		let tmp = []
@@ -33,6 +35,7 @@
 </script>
 
 <form
+	data-id={dataID}
   onclick={bubble('click')}
   class="box"
   style={
@@ -44,12 +47,9 @@
   use:enhance
 >
 	<button onclick={(e) => handleClick(e)}>
-		<h1 class="font-bold text-center" style="font-size: min(2vw, 36px);">{data?.name ?? 'button'}</h1>
+		<h1 class="font-bold text-center" style="font-size: min(2vw, 36px);">{data?.name}</h1>
 	</button>
 	{#each data?.hotkeys ?? [] as hk (hk)}
 		<input name="id" value={hk.id} type="hidden" />
 	{/each}
 </form>
-
-<style>
-</style>

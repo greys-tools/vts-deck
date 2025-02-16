@@ -9,6 +9,10 @@ if(browser) {
 		for(var k in data) {
 			tmp.set(k, data[k]);
 		}
+
+		if(!tmp.get('sort')) {
+			tmp.set('sort', Array.apply(null, {length: 25}).map((x, i) => i.toString()));
+		}
 	}
 }
 

@@ -96,10 +96,9 @@ export default class PluginClient {
 		return new Promise((res, rej) => {
 			const messageHandler = async (msg) => {
 				msg = this.decodeMessage(msg);
-				console.log(msg);
 				if(msg.requestID !== id) return;
 
-				if(this.debug) console.log(`[debug] Received message with ID ${id}`);
+				if(this.debug) console.log(`[debug] Received message with ID ${id}:\n`, msg);
 				this.ws.removeListener('message', messageHandler);
 				this.ws.removeEventListener('message', messageHandler);
 				clearTimeout(tm);

@@ -17,7 +17,7 @@ const client = new PluginClient(ws, {
 	pluginDeveloper,
 	pluginName,
 	pluginIcon,
-	debug: true
+	debug: false
 });
 
 export default client;

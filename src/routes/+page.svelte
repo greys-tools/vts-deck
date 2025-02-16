@@ -3,8 +3,9 @@
 	import { invalidateAll, goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 
-	import { buttons, update } from '$lib/stores/buttons';
-	import { settings } from '$lib/stores/settings';
+	import { buttons } from '$lib/stores/buttons';
+	import { slots } from '$lib/stores/slots';
+	import { settings, update } from '$lib/stores/settings';
 	import { editMode } from '$lib/stores/editMode';
 
 	import Button from '$lib/components/Button.svelte';
@@ -13,15 +14,17 @@
 	/** @type {{data?: any}} */
 	let { data = {} } = $props();
 
-	let editing = $state("");
+	let editing = $state({button: "", slot: ""});
 	let open = $state(false);
 	let error = $state("");
 
 	let view = $derived.by(() => $settings.get('view') ?? {x: 5, y: 5});
+	let sort = $derived.by(() => $settings.get('sort'));
+	console.log($slots);
 
-	const handleClick = (e, slot) => {
+	const handleClick = (e, slot = "", button = "") => {
 		if($editMode) {
-			editing = slot;
+			editing = { slot, button };
 			open = true;
 			error = "";
 		} else {
@@ -29,36 +32,79 @@
 			setTimeout(() => e.target.classList.remove('click'), 250)
 		}
 	}
+
+	const swappable = (node, data) => {
+		let { group, disabled } = data;
+		var swap = new Sortable(node, {
+			disabled,
+			// swap: true,
+			animation: 250,
+			store: {
+				get: (sortable) => {
+					let order = sort;
+					return order;
+				},
+
+				set: (sortable) => {
+					let order = sortable.toArray();
+					update('sort', order);
+				}
+			}
+		});
+
+		return {
+			update: (data) => {
+				console.log(data);
+				swap.option('disabled', data.disabled);
+			},
+			destroy: () => {
+				swap.destroy();
+			}
+		}
+	}
+
+	let gridStyle = $derived.by(() => {
+		let w = 10 * ( 10 / view.x );
+		return (
+			`display: grid;` +
+			`grid-template-columns: repeat(${view.x}, min(${w}vw, 150px));` +
+			`grid-template-rows: repeat(5, min(${w}vw, 150px));`
+		);
+	})
 </script>
+
+<svelte:head>
+	<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</svelte:head>
 
 <div class="container">
 	{#if data?.waiting}
 		<div>
 			<h1 class="text-3xl text-black dark:text-white">Waiting to connect...</h1>
-			<h3 class="text-xl text-black dark:text-white">Check your VTube Studio client to authorize the connection, then reload the page to get started</h3>
+			<h3 class="text-xl text-black dark:text-white">
+				Check your VTube Studio client to authorize the connection,{' '}
+				then reload the page to get started
+			</h3>
 		</div>
 	{:else}
-		<div class="w-full h-full flex flex-col items-center justify-center">
-			{#each { length: view.y } as _,j (j)}
-				<div class="flex items-center justify-center w-full">
-					{#each { length: view.x } as _,i (i)}
-						{#if $buttons?.get(`slot-${(j * view.x) + (i+1)}`)}
-							<Button slot={`slot-${(j * view.x) + (i+1)}`}
-								data={$buttons.get(`slot-${(j * view.x) + (i+1)}`)} 
-								on:click={(e) => handleClick(e, `slot-${(j * view.x) + (i+1)}`)} 
-							/>
-						{:else}
-							<div class="box" onclick={(e) => handleClick(e, `slot-${(j * view.x) + (i+1)}`)}>
-							</div>
-						{/if}
-					{/each}
-				</div>
+		<div id="grid" use:swappable={{ disabled: !$editMode }}
+			class="w-full h-full flex flex-col items-center justify-center"
+			style={gridStyle}
+		>
+			{#each { length: view.x * view.y } as _, i (`${i}`)}
+				{@const slot = `${i}`}
+				{@const btnID = $slots?.get(slot)}
+				<Button {slot}
+					dataID={slot}
+					data={$buttons?.get(btnID)} 
+					on:click={(e) => handleClick(e, slot, btnID)} 
+				/>
 			{/each}
 		</div>
 	{/if}
 </div>
 
-<ButtonModal bind:open bind:error bind:item={editing} hotkeys={data.hotkeys}/>
+<ButtonModal bind:open bind:error bind:item={editing.button} bind:slot={editing.slot} hotkeys={data.hotkeys}/>
 
 <style>
 	.container {
@@ -69,18 +115,6 @@
 		align-items: center;
 		justify-content: center;
 		flex-wrap: wrap;
-		margin: auto;
-	}
-
-	#grid {
-		display: grid;
-		grid-template-rows: repeat(4, 200px);
-		grid-template-columns: repeat(5, 200px);
-		grid-template-areas: 
-		"button1 button2 button3 button4 button5"
-		"button6 button7 button8 button9 button10"
-		"button11 button12 button13 button14 button15"
-		"button16 button17 button18 button19 button20";
 		margin: auto;
 	}
 </style>
