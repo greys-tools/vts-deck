@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { app: App, BrowserWindow } = require('electron');
+const { app: App, BrowserWindow, shell } = require('electron');
 const express = require('express');
 
 async function setup() {
@@ -11,9 +11,6 @@ async function setup() {
 
   app.use(handler);
   app.listen(PORT);
-  console.log(`Listening on port ${PORT}`);
-  console.log('API: ' + process.env.API);
-
 
   const createWindow = () => {
     const win = new BrowserWindow({
@@ -26,10 +23,18 @@ async function setup() {
       titleBarOverlay: {
         color: '#1f2937',
         symbolColor: '#74b1be',
-        height: 60
+        height: 44
       }
     })
 
+    const handleWindow = ({ url }) => {
+      if (!url.includes('localhost')) {
+        shell.openExternal(url);
+        return { action: 'deny' };
+      }
+    }
+
+    win.webContents.setWindowOpenHandler(handleWindow);
     win.loadURL(`http://localhost:${PORT}`)
   }
 

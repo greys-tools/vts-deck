@@ -81,26 +81,45 @@
   }
 </script>
 
-<Modal bind:open={open} size="sm" autoclose={false} outsideclose={false} dismissable={false} class="w-full min-h-96">
+<Modal 
+  bind:open={open} 
+  size="md" 
+  autoclose={false} 
+  outsideclose={false} 
+  dismissable={false} 
+  class="w-full min-h-96"
+  title="Edit Button"
+>
   <div class="flex flex-shrink-0 flex-col justify-between">
-    <h1 class="mb-4 text-2xl font-medium text-gray-900 dark:text-white flex-shrink-0 flex-grow-0">Edit Button in Slot {slot}</h1>
     {#if error}
       <p class='text-red-500 dark:text-red-300'>Error: {error}</p>
     {/if}
     <div class="">
-      <Label for="name">Button Name</Label>
-      <Input id="name" bind:value={data.name} floatClass="text-md" />
-      <ColorPicker
-        bind:hex={data.color}
-        textInputModes={['hex']}
-        isAlpha={false}
-        isTextInput={false}
-        --picker-height="100px"
-        --picker-width="100px"
-      />
-      <Label for="toggle">Act as a toggle</Label>
-      <Toggle name="toggle" bind:checked={data.toggle} />
-      <h3 class="text-xl text-black dark:text-white">Hotkeys (click to remove)</h3>
+      <div class="mb-2">
+        <Label for="name" class="text-lg">Button Name</Label>
+        <Input id="name" bind:value={data.name} floatClass="text-md" />
+      </div>
+
+      <div class="mb-2">
+        <h3 class="text-lg text-black dark:text-white">
+          Color
+        </h3>
+        <ColorPicker
+          bind:hex={data.color}
+          textInputModes={['hex']}
+          isAlpha={false}
+          isTextInput={false}
+          --picker-height="100px"
+          --picker-width="100px"
+        />
+      </div>
+
+      <div class="mb-2">
+        <Label for="toggle" class="text-lg">Act as a toggle</Label>
+        <Toggle name="toggle" bind:checked={data.toggle} />
+      </div>
+
+      <h3 class="text-lg text-black dark:text-white">Hotkeys (click to remove)</h3>
       <div class="w-full bg-gray-300 dark:bg-gray-700 p-2 min-h-24 my-2 rounded-md">
         {#each data.hotkeys as hk (hk.id)}
           <Button color="alternative" class="m-2 p-2 rounded-md text-black dark:text-white" on:click={() => data.hotkeys = data.hotkeys.filter(x => x.id !== hk.id)}>

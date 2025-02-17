@@ -4,8 +4,8 @@
 	import { browser } from '$app/environment';
 	import { nanoid } from 'nanoid';
 
-	import { buttons } from '$lib/stores/buttons';
-	import { slots } from '$lib/stores/slots';
+	import { buttons, remove as removeButton } from '$lib/stores/buttons';
+	import { slots, remove as removeSlot } from '$lib/stores/slots';
 	import { settings, update } from '$lib/stores/settings';
 	import { editMode } from '$lib/stores/editMode';
 
@@ -22,22 +22,42 @@
 	let view = $derived.by(() => $settings.get('view') ?? {x: 5, y: 5});
 	let sort = $derived.by(() => $settings.get('sort'));
 
-	const handleClick = (e, slot = "", button = "") => {
-		if($editMode) {
-			editing = { slot, button };
-			open = true;
-			error = "";
+	let timeout;
+
+	let refresh = () => {
+		if(!browser) return;
+		if(!data.waiting) {
+			if(browser) invalidateAll();
+			clearTimeout(timeout)
 		} else {
-			e.target.classList.add('click');
-			setTimeout(() => e.target.classList.remove('click'), 250)
+			invalidateAll();
 		}
+
+		timeout = setTimeout(() => { refresh() }, 1000)
+	}
+
+	refresh();
+
+	const handleEdit = (e, slot = "", button = "") => {
+		editing = { slot, button };
+		open = true;
+		error = "";
+	}
+
+	const handleClick = (e) => {
+		e.target.classList.add('click');
+		setTimeout(() => e.target.classList.remove('click'), 250)
+	}
+
+	const handleClear = (slot, button) => {
+		removeButton(button);
+		removeSlot(slot);
 	}
 
 	const swappable = (node, data) => {
 		let { group, disabled } = data;
 		var swap = new Sortable(node, {
 			disabled,
-			// swap: true,
 			animation: 250,
 			store: {
 				get: (sortable) => {
@@ -81,15 +101,13 @@
 		<div>
 			<h1 class="text-3xl text-black dark:text-white">Waiting to connect...</h1>
 			<h3 class="text-xl text-black dark:text-white">
-				Check your VTube Studio client to authorize the connection,{' '}
-				then reload the page to get started
+				Check your VTube Studio client to authorize the connection!
 			</h3>
 		</div>
 	{:else if !sort?.[0]}
 		<div></div>
 	{:else}
 		<div id="grid" use:swappable={{ disabled: !$editMode }}
-			class="w-full h-full flex flex-col items-center justify-center"
 			style={gridStyle}
 		>
 			{#each { length: 50 } as _, i (`${i}`)}
@@ -99,7 +117,13 @@
 					dataID={slot}
 					data={$buttons?.get(btnID)} 
 					shown={sort.indexOf(`${i}`) < view.x * view.y ? true : false}
-					on:click={(e) => handleClick(e, slot, btnID)} 
+					onclick={(e) => {
+						if($editMode) handleEdit(e, slot, btnID);
+						else handleClick(e)
+					}}
+					oncontextmenu={(e) => showContext(e, slot, btnID)}
+					onedit={(e) => handleEdit(e, slot, btnID)}
+					onclear={() => handleClear(slot, btnID)}
 				/>
 			{/each}
 		</div>

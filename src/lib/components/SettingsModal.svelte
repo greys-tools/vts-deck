@@ -7,7 +7,6 @@
     Checkbox,
     Input,
     FloatingLabelInput,
-    Range,
 
     Dropdown,
     DropdownItem,
@@ -40,7 +39,7 @@
     {/if}
     <div class="w-full flex flex-col items-start justify-center">
       <div id="theme-settings" class="w-full flex flex-row items-center justify-between mb-2">
-        <p>Theme</p>
+        <p><b>Theme</b></p>
         <ButtonGroup>
           <Button
             color={theme == 'dark' ? 'blue' : 'alternative'}
@@ -67,16 +66,19 @@
       </div>
 
       <div id="view-settings" class="w-full flex flex-col items-start justify-between mb-2">
-        <p>View</p>
+        <p><b>View</b></p>
         <div>
           <Label for="x-range">Columns (X/Horizontal Amount)</Label>
           <div class="flex items-center justify-center">
-            <span>5</span>
-            <Range min=5 max=10 size="md" value={view.x ?? 5} class="mx-2" list="values"
+            <span><b>5</b></span>
+            <input type="range" min=5 max=10 size="md" value={view.x ?? 5} list="values"
+              class="mx-2 bg-transparent"
+              id="x-range"
+              name="x-range"
               onchange={(e) => save('view', {...view, x: parseInt(e.target.value) })}
             />
-            <span>10</span>
-            <datalist id="values">
+            <span><b>10</b></span>
+            <datalist id="values" name="values">
               <option value="5"></option>
               <option value="6"></option>
               <option value="7"></option>

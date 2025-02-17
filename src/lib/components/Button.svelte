@@ -5,15 +5,33 @@
 	import { enhance } from '$app/forms';
 	import { editMode } from '$lib/stores/editMode';
 	import { toggles, update } from '$lib/stores/toggles';
+
+	import ContextMenu from '$lib/components/ContextMenu.svelte';
+
 	/** @type {{data: any, slot: any}} */
 	let {
 		data,
 		slot,
 		dataID,
-		shown
+		shown,
+		onedit,
+		onclear,
+		onclick
 	} = $props();
 	dataID = dataID.toString();
 	slot = slot.toString
+
+	let context = $state({
+		shown: false,
+		target: {
+			slot,
+			button: dataID
+		},
+		pos: {
+			x: 0,
+			y: 0
+		}
+	});
 
 	function styles() {
 		let tmp = []
@@ -24,10 +42,22 @@
 
 	function handleClick(e) {
 		if($editMode) {
-			e.preventDefault()
+			e.preventDefault();
+			onedit(e)
 		} else {
 			if(data?.toggle) update(slot, toggled ? false : true);
 		}
+	}
+
+	let showContext = (e) => {
+		e.preventDefault();
+		context.shown = true;
+		context.pos = {
+			x: e.clientX,
+			y: e.clientY
+		}
+
+		console.log('context', context)
 	}
 
 	let style = $state([]);
@@ -40,7 +70,7 @@
 </script>
 
 <form
-	data-id={dataID}
+  data-id={dataID}
   onclick={bubble('click')}
   class="box"
   style={
@@ -52,10 +82,21 @@
   method="POST"
   use:enhance
 >
-	<button onclick={(e) => handleClick(e)}>
+	<button
+		onclick={(e) => handleClick(e)} 
+		oncontextmenu={showContext}
+	>
 		<h1 class="font-bold text-center" style="font-size: min(2vw, 36px);">{data?.name}</h1>
 	</button>
 	{#each data?.hotkeys ?? [] as hk (hk)}
 		<input name="id" value={hk.id} type="hidden" />
 	{/each}
 </form>
+
+<ContextMenu
+	bind:shown={context.shown}
+	bind:target={context.target}
+	bind:pos={context.pos}
+	onedit={onedit}
+	onclear={onclear}
+/>

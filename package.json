@@ -10,9 +10,9 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "electron .",
-    "app:dir": "electron-builder --dir",
-    "app:dist": "electron-builder"
+    "start": "vite build && electron .",
+    "app:dir": "vite build && electron-builder --dir",
+    "app:dist": "vite build && electron-builder"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.6.1",
