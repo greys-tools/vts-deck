@@ -53,13 +53,14 @@ export default class PluginClient {
 		}
 
 		let reqID, msg;
-		let token = this.token ?? undefined;
+		let token = this.token || undefined;
+		if(this.debug) console.log('token: ', token);
 
-		if(!this.token) {
+		if(!token?.length) {
 			reqID = await this.sendRequest('auth-token', data);
 			msg = await this.awaitMessage(reqID);
 			if(this.debug) console.log(`[debug] Auth message: `, msg);
-			this.token = msg.data.authenticationToken;
+			token = msg.data.authenticationToken;
 		}
 
 		reqID = await this.sendRequest('auth', {
@@ -68,6 +69,7 @@ export default class PluginClient {
 		})
 		msg = await this.awaitMessage(reqID);
 		
+		this.token = token;
 		this.ready = true;
 		this.ws.emit('authed', { token });
 		if(msg.data.authenticated) return { success: true, token };

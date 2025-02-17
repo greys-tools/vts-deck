@@ -21,7 +21,7 @@ const init = (token) => {
 		pluginDeveloper,
 		pluginName,
 		pluginIcon,
-		debug: false
+		debug: true
 	});
 }
 

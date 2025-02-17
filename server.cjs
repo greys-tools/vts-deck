@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { app: App, BrowserWindow, shell } = require('electron');
+const { app: App, BrowserWindow, shell, session } = require('electron');
 const express = require('express');
 
 async function setup() {
@@ -34,8 +34,10 @@ async function setup() {
       }
     }
 
+    session.defaultSession.cookies.on('change', () => session.defaultSession.cookies.flushStore());
+
     win.webContents.setWindowOpenHandler(handleWindow);
-    win.loadURL(`http://localhost:${PORT}`)
+    win.loadURL(`http://localhost:${PORT}`);
   }
 
   App.whenReady().then(() => {
