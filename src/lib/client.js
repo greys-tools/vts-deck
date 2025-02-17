@@ -11,13 +11,18 @@ import {
 } from '$lib/constants';
 
 const ws = new WebSocket(wsUrl);
-const client = new PluginClient(ws, {
-	apiVersion,
-	apiName,
-	pluginDeveloper,
-	pluginName,
-	pluginIcon,
-	debug: false
-});
+let client; 
 
-export default client;
+const init = (token) => {
+	client = new PluginClient(ws, {
+		token,
+		apiVersion,
+		apiName,
+		pluginDeveloper,
+		pluginName,
+		pluginIcon,
+		debug: false
+	});
+}
+
+export { client, init };

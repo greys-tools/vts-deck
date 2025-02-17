@@ -1,8 +1,12 @@
 import { fail } from '@sveltejs/kit';
-import client from '$lib/client';
+import { client, init } from '$lib/client';
 
 export async function load({ cookies, fetch, locals }) {
-	if(!client.ready) return { waiting: true };
+	let token = cookies.get('token');
+
+	if(!client) init(token);
+	if(!client.ready) return { verified: !!token, waiting: true };
+	if(!token) cookies.set('token', client.token, { path: '/' });
 
 	var hotkeys = await client.hotkeys.getHotkeys();
 	hotkeys = Array.from(hotkeys).map(([id, h]) => {

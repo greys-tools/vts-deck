@@ -27,8 +27,7 @@
 	let refresh = () => {
 		if(!browser) return;
 		if(!data.waiting) {
-			if(browser) invalidateAll();
-			clearTimeout(timeout)
+			clearTimeout(timeout);
 		} else {
 			invalidateAll();
 		}
@@ -97,11 +96,18 @@
 </svelte:head>
 
 <div class="container">
-	{#if data?.waiting}
+	{#if data?.waiting && !data?.verified}
 		<div>
 			<h1 class="text-3xl text-black dark:text-white">Waiting to connect...</h1>
 			<h3 class="text-xl text-black dark:text-white">
 				Check your VTube Studio client to authorize the connection!
+			</h3>
+		</div>
+	{:else if data?.waiting}
+		<div>
+			<h1 class="text-3xl text-black dark:text-white">Connecting...</h1>
+			<h3 class="text-xl text-black dark:text-white">
+				We'll be ready in just a second!
 			</h3>
 		</div>
 	{:else if !sort?.[0]}

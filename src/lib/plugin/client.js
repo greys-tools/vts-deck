@@ -20,6 +20,8 @@ export default class PluginClient {
 		this.pluginName = data.pluginName;
 		this.pluginDeveloper = data.pluginDeveloper;
 
+		this.token = data.token;
+
 		this.hotkeys = new HotkeyManager(this);
 
 		this.ws.on('open', async () => {
@@ -44,16 +46,21 @@ export default class PluginClient {
 	}
 
 	async auth() {
-		if(this.token) return;
 		let data = {
 			pluginIcon: this.pluginIcon,
 			pluginName: this.pluginName,
 			pluginDeveloper: this.pluginDeveloper
 		}
-		let reqID = await this.sendRequest('auth-token', data);
-		let msg = await this.awaitMessage(reqID);
-		if(this.debug) console.log(`[debug] Auth message: `, msg);
-		let token = msg.data.authenticationToken;
+
+		let reqID, msg;
+		let token = this.token ?? undefined;
+
+		if(!this.token) {
+			reqID = await this.sendRequest('auth-token', data);
+			msg = await this.awaitMessage(reqID);
+			if(this.debug) console.log(`[debug] Auth message: `, msg);
+			this.token = msg.data.authenticationToken;
+		}
 
 		reqID = await this.sendRequest('auth', {
 			...data,
@@ -61,7 +68,6 @@ export default class PluginClient {
 		})
 		msg = await this.awaitMessage(reqID);
 		
-		this.token = token;
 		this.ready = true;
 		this.ws.emit('authed', { token });
 		if(msg.data.authenticated) return { success: true, token };
