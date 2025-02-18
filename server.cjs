@@ -1,5 +1,12 @@
 require('dotenv').config();
-const { app: App, BrowserWindow, shell, session } = require('electron');
+const path = require('path');
+const {
+  app: App,
+  BrowserWindow,
+  ipcMain,
+  shell,
+  session
+} = require('electron');
 const express = require('express');
 
 async function setup() {
@@ -17,14 +24,10 @@ async function setup() {
       width: 1920,
       height: 1080,
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: true,
+        preload: path.join(__dirname, 'preload.cjs')
       },
-      titleBarStyle: 'hidden',
-      titleBarOverlay: {
-        color: '#1f2937',
-        symbolColor: '#74b1be',
-        height: 44
-      }
+      frame: false
     })
 
     const handleWindow = ({ url }) => {
@@ -41,6 +44,22 @@ async function setup() {
   }
 
   App.whenReady().then(() => {
+    ipcMain.on('minimize', () => {
+      let curwindow = BrowserWindow.getFocusedWindow();
+      curwindow.minimize();
+    })
+
+    ipcMain.on('maximize', () => {
+      let curwindow = BrowserWindow.getFocusedWindow();
+      if(curwindow.isMaximized()) curwindow.unmaximize();
+      else curwindow.maximize();
+    })
+
+    ipcMain.on('close', () => {
+      let curwindow = BrowserWindow.getFocusedWindow();
+      curwindow.close();
+    })
+
     createWindow()
   })
 }

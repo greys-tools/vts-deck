@@ -57,7 +57,7 @@
     "mac": {
       "category": "public.app-category.utilities"
     },
-    "asar": "false",
+    "asar": "true",
     "files": [
       "**/*",
       "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
