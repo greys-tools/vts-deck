@@ -12,23 +12,28 @@ body, html {
 	@apply dark:bg-gray-900;
 }
 
+.ghost {
+	opacity: .4;
+}
+
 .box {
-	@apply border-2;
-	@apply border-gray-400;
-	@apply dark:border-gray-500;
+	@apply outline-2;
+	@apply outline-gray-400;
+	@apply dark:outline-gray-500;
 	@apply dark:bg-gray-700;
 	@apply text-black;
 	@apply dark:text-white;
-	@apply hover:border-8;
-	@apply flex;
-	@apply flex-col;
-	@apply justify-center;
-	@apply items-center;
+	@apply hover:outline-8;
 	@apply m-2;
 	@apply rounded-lg;
-
 	@apply cursor-pointer;
-	@apply transition-all;
+
+	aspect-ratio: 1 / 1;
+	outline-style: solid;
+/*	width: 10vw;*/
+	max-width: 150px;
+
+	transition: outline-width .1s;
 }
 
 .box button {

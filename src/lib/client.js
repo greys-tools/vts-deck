@@ -1,23 +1,28 @@
-import {
-	PLUGIN_DEVELOPER as pluginDeveloper,
-	PLUGIN_NAME as pluginName 
-} from '$env/static/private';
 import WebSocket from 'ws';
 import PluginClient from '$lib/plugin/client';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import * as Constants from '$lib/constants';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const ws = new WebSocket('ws://0.0.0.0:8001');
-const client = new PluginClient(ws, {
-	apiVersion: Constants.apiVersion,
-	apiName: Constants.apiName,
+import {
+	apiVersion,
+	apiName,
 	pluginDeveloper,
 	pluginName,
-	iconFile: `${__dirname}/../../icon.png`,
-	debug: true
-});
+	pluginIcon,
+	wsUrl,
+} from '$lib/constants';
 
-export default client;
+const ws = new WebSocket(wsUrl);
+let client; 
+
+const init = (token) => {
+	client = new PluginClient(ws, {
+		token,
+		apiVersion,
+		apiName,
+		pluginDeveloper,
+		pluginName,
+		pluginIcon,
+		debug: true
+	});
+}
+
+export { client, init };

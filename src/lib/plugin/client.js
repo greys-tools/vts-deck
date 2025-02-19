@@ -16,9 +16,11 @@ export default class PluginClient {
 		this.apiName = data.apiName;
 		this.debug = data.debug ?? false;
 
-		this.iconFile = data.iconFile;
+		this.pluginIcon = data.pluginIcon;
 		this.pluginName = data.pluginName;
 		this.pluginDeveloper = data.pluginDeveloper;
+
+		this.token = data.token;
 
 		this.hotkeys = new HotkeyManager(this);
 
@@ -44,17 +46,22 @@ export default class PluginClient {
 	}
 
 	async auth() {
-		if(this.token) return;
-		this.pluginIcon = readFileSync(this.iconFile).toString('base64');
 		let data = {
 			pluginIcon: this.pluginIcon,
 			pluginName: this.pluginName,
 			pluginDeveloper: this.pluginDeveloper
 		}
-		let reqID = await this.sendRequest('auth-token', data);
-		let msg = await this.awaitMessage(reqID);
-		if(this.debug) console.log(`[debug] Auth message: `, msg);
-		let token = msg.data.authenticationToken;
+
+		let reqID, msg;
+		let token = this.token || undefined;
+		if(this.debug) console.log('token: ', token);
+
+		if(!token?.length) {
+			reqID = await this.sendRequest('auth-token', data);
+			msg = await this.awaitMessage(reqID);
+			if(this.debug) console.log(`[debug] Auth message: `, msg);
+			token = msg.data.authenticationToken;
+		}
 
 		reqID = await this.sendRequest('auth', {
 			...data,
@@ -97,10 +104,9 @@ export default class PluginClient {
 		return new Promise((res, rej) => {
 			const messageHandler = async (msg) => {
 				msg = this.decodeMessage(msg);
-				console.log(msg);
 				if(msg.requestID !== id) return;
 
-				if(this.debug) console.log(`[debug] Received message with ID ${id}`);
+				if(this.debug) console.log(`[debug] Received message with ID ${id}:\n`, msg);
 				this.ws.removeListener('message', messageHandler);
 				this.ws.removeEventListener('message', messageHandler);
 				clearTimeout(tm);

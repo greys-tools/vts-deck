@@ -1,3 +1,5 @@
+// saves buttons and maps to button ids
+
 import { writable, get } from 'svelte/store';
 import { browser } from '$app/environment';
 
@@ -6,6 +8,7 @@ if(browser) {
 	if(('buttons' in localStorage)) {
 		var item = localStorage.getItem('buttons')
 		var data = JSON.parse(item);
+		console.log(data);
 		for(var k in data) {
 			tmp.set(k, data[k]);
 		}
