@@ -49,10 +49,8 @@ instead of just columns!
 *Unless otherwise stated, everything here is planned to be fixed in later releases*
 - **This program only works with VTube Studio open**, and may refuse to run if it isn't open
 - This tool currently expects you to run VTube Studio on the same PC as the tool, using the default port (8001)
-- Revoking the plugin's token inside VTube Studio will cause the program to stop working and may require using devTools to fix
 - Long names may not fit inside of buttons when the app is in full screen mode
-- Connecting may take several seconds, and there may be delays between using hotkeys if the program is idle for a biy (this seems to be a problem with `ws`, but we are looking into fixes!)
-- As mentioned before, this tool is currently only available for Windows
+- The built (Electron) version of this tool is currently only available for Windows
 
 ## Other Information
 If you like this tool and would like to support the devs behind it, consider [donating](https://greys-dono.carrd.co/) or sharing the tool with others <3

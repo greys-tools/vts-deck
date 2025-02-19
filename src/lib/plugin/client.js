@@ -27,22 +27,26 @@ export default class PluginClient {
 		this.ws.on('open', async () => {
 			this.open = true;
 
-			this.ws.on('authed', () => clearInterval(this.reconnect));
-			this.reconnect = setInterval(async () => {
-				console.log('Attempting connection...');
-				if(this.ready) clearInterval(this.reconnect);
-				try {
-					await this.auth();
-				} catch(e) {
-					console.error("Couldn't connect plugin client: ", e)
-					return;
-				}
-
-				console.log("Plugin connected.");
-				clearInterval(this.reconnect)
-				this.ws.emit('ready');
-			}, 15_000)
+			this.ws.on('authed', () => clearTimeout(this.reconnect));
+			await this.connect();
 		})
+	}
+
+	async connect() {
+		console.log('Attempting connection...');
+		if(this.ready) clearTimeout(this.reconnect);
+		try {
+			await this.auth();
+		} catch(e) {
+			console.log(e)
+			console.error("Couldn't connect plugin client: ", e);
+			this.reconnect = setTimeout(async () => await this.connect(), 5_000);
+			return;
+		}
+
+		console.log("Plugin connected.");
+		clearTimeout(this.reconnect)
+		this.ws.emit('ready');
 	}
 
 	async auth() {
@@ -69,11 +73,16 @@ export default class PluginClient {
 		})
 		msg = await this.awaitMessage(reqID);
 		
-		this.token = token;
-		this.ready = true;
-		this.ws.emit('authed', { token });
-		if(msg.data.authenticated) return { success: true, token };
-		else return { success: false, reason: msg.data.reason };
+		if(!msg.data.authenticated) {
+			this.token = undefined;
+			this.ready = false;
+			return Promise.reject({ success: false, reason: msg.data.message });
+		} else {
+			this.token = token;
+			this.ready = true;
+			this.ws.emit('authed', { token });
+			return { success: true, token };
+		}
 	}
 
 	randomID(len = 5) {
