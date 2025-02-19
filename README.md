@@ -34,6 +34,12 @@ If you have a device other than a Windows PC and want to use the tool, you can a
 5. Run `npm run dev` to start the server, and open the link that the terminal gives you (usually `http://localhost:5173`)
 6. Use the tool as you normally would!
 
+## External Devices
+If you use the browser option above, you can also use this tool on an external device by running the
+app's server on your PC and opening the browser interface on a separate phone, tablet, or computer.
+
+Look for the `192.168...` IP address in the console; that's what you'll need to type in your browser to connect!
+
 ## App Settings
 Right now, the only settings available are for the app's theme (light/dark) and the number of buttons in the grid 
 (which can be extended horizontally to have up to 10 buttons per row).
