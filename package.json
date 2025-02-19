@@ -7,7 +7,7 @@
   "private": true,
   "main": "server.cjs",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite build && electron .",
