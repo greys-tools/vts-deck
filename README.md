@@ -13,12 +13,12 @@ for it to work!
    - If you still want to use this tool, you can download the repository and run it manually instead- it also works in your browser!
    - We plan to add more releases in the future
 2. **Latest release** of the tool
-   - See the [releases page](https://github.com/greys-tools/vts-deck/releases)
+   - Visit the [releases page](https://github.com/greys-tools/vts-deck/releases) and download the `Setup [version].zip` file
 3. **VTube Studio**, a **Vtubing model**, and some **hotkeys** set up on it
 
 ## Getting Started
 Getting the tool going is intended to be as easy and simple as possible:
-1. Download and install the latest release, linked above
+1. Download, extract, and install the latest release, linked above
 2. Open up VTube Studio and check to make sure your model and hotkeys are set up
 3. Open the tool and allow it to connect to VTS
    - Note: You'll need to authorize the connection in VTS the first time you run the program
