@@ -8,15 +8,20 @@ export async function load({ cookies, fetch, locals }) {
 	if(token == 'undefined') token = undefined;
 
 	if(!client) init(token);
-	if(!client.ready) return { verified: !!token, waiting: true };
-	if(!token) cookies.set('token', client.token, { path: '/', expires: new Date(Date.now() + YEAR) });
+	if(!client.ready) return { verified: !!client.token, waiting: true };
+	cookies.set('token', client.token, { path: '/', expires: new Date(Date.now() + YEAR) });
+
 
 	var hotkeys = await client.hotkeys.getHotkeys();
-	hotkeys = Array.from(hotkeys).map(([id, h]) => {
-		let { client, manager, ...rest } = h;
-		return rest;
-	})
-	return { hotkeys }
+	if(hotkeys) {
+		hotkeys = Array.from(hotkeys).map(([id, h]) => {
+			let { client, manager, ...rest } = h;
+			return rest;
+		})
+		return { hotkeys }
+	} else {
+		return { error: "Couldn't fetch hotkeys" }
+	}
 }
 
 export const actions = {

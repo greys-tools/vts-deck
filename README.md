@@ -13,12 +13,12 @@ for it to work!
    - If you still want to use this tool, you can download the repository and run it manually instead- it also works in your browser!
    - We plan to add more releases in the future
 2. **Latest release** of the tool
-   - See the [releases page](https://github.com/greys-tools/vts-deck/releases)
+   - Visit the [releases page](https://github.com/greys-tools/vts-deck/releases) and download the `Setup [version].zip` file
 3. **VTube Studio**, a **Vtubing model**, and some **hotkeys** set up on it
 
 ## Getting Started
 Getting the tool going is intended to be as easy and simple as possible:
-1. Download and install the latest release, linked above
+1. Download, extract, and install the latest release, linked above
 2. Open up VTube Studio and check to make sure your model and hotkeys are set up
 3. Open the tool and allow it to connect to VTS
    - Note: You'll need to authorize the connection in VTS the first time you run the program
@@ -33,6 +33,12 @@ If you have a device other than a Windows PC and want to use the tool, you can a
 4. Run `npm i` to install all the dependencies for the tool
 5. Run `npm run dev` to start the server, and open the link that the terminal gives you (usually `http://localhost:5173`)
 6. Use the tool as you normally would!
+
+## External Devices
+If you use the browser option above, you can also use this tool on an external device by running the
+app's server on your PC and opening the browser interface on a separate phone, tablet, or computer.
+
+Look for the `192.168...` IP address in the console; that's what you'll need to type in your browser to connect!
 
 ## App Settings
 Right now, the only settings available are for the app's theme (light/dark) and the number of buttons in the grid 
@@ -49,10 +55,8 @@ instead of just columns!
 *Unless otherwise stated, everything here is planned to be fixed in later releases*
 - **This program only works with VTube Studio open**, and may refuse to run if it isn't open
 - This tool currently expects you to run VTube Studio on the same PC as the tool, using the default port (8001)
-- Revoking the plugin's token inside VTube Studio will cause the program to stop working and may require using devTools to fix
 - Long names may not fit inside of buttons when the app is in full screen mode
-- Connecting may take several seconds, and there may be delays between using hotkeys if the program is idle for a biy (this seems to be a problem with `ws`, but we are looking into fixes!)
-- As mentioned before, this tool is currently only available for Windows
+- The built (Electron) version of this tool is currently only available for Windows
 
 ## Other Information
 If you like this tool and would like to support the devs behind it, consider [donating](https://greys-dono.carrd.co/) or sharing the tool with others <3

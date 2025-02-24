@@ -21,6 +21,7 @@
 	dataID = dataID.toString();
 	slot = slot.toString
 
+	let toggled = $derived($toggles.get(data.id));
 	let context = $state({
 		shown: false,
 		target: {
@@ -33,22 +34,6 @@
 		}
 	});
 
-	function styles() {
-		let tmp = []
-		if(data?.color) tmp.push()
-		if(data?.toggle) tmp.push()
-		style = tmp;
-	}
-
-	function handleClick(e) {
-		if($editMode) {
-			e.preventDefault();
-			onedit(e)
-		} else {
-			if(data?.toggle) update(slot, toggled ? false : true);
-		}
-	}
-
 	let showContext = (e) => {
 		e.preventDefault();
 		context.shown = true;
@@ -60,9 +45,22 @@
 		console.log('context', context)
 	}
 
+	function handleClick(e) {
+		if($editMode) {
+			e.preventDefault();
+			onedit(e)
+		} else {
+			if(data?.toggle) update(data.id, toggled ? false : true);
+		}
+	}
+
 	let style = $state([]);
-	
-	let toggled = $derived($toggles.get(slot));
+	function styles() {
+		let tmp = []
+		if(data?.color) tmp.push()
+		if(data?.toggle) tmp.push()
+		style = tmp;
+	}
 
 	$effect(() => {
 		styles();

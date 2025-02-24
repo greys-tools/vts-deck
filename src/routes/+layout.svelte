@@ -1,5 +1,6 @@
 <script>
   import "../app.css";
+  import { browser } from '$app/environment';
   import {
     Navbar,
     NavBrand,
@@ -31,6 +32,9 @@
   let mode = $derived($editMode);
   let open = $state(false);
   let openHelp = $state(false);
+
+  let controls = $state(false);
+  if(browser && window?.electronAPI) controls = true;
 
   function edit() {
     update(true);
@@ -91,19 +95,21 @@
       </Button>
     </div>
   </div>
-  <div class="float-right flex items-center content-center" style="app-region: no-drag">
-    <Button color="alternative" class="p-1 border-none ml-2" onclick={minimize}>
-      <Minimize />
-    </Button>
+  {#if controls}
+    <div class="float-right flex items-center content-center" style="app-region: no-drag">
+      <Button color="alternative" class="p-1 border-none ml-2" onclick={minimize}>
+        <Minimize />
+      </Button>
 
-    <Button color="alternative" class="p-1 border-none ml-2" onclick={maximize}>
-      <Maximize />
-    </Button>
+      <Button color="alternative" class="p-1 border-none ml-2" onclick={maximize}>
+        <Maximize />
+      </Button>
 
-    <Button color="alternative" class="p-1 border-none ml-2" onclick={close}>
-      <Close />
-    </Button>
-  </div>
+      <Button color="alternative" class="p-1 border-none ml-2" onclick={close}>
+        <Close />
+      </Button>
+    </div>
+  {/if}
 </Navbar>
 
 <SettingsModal bind:open />
