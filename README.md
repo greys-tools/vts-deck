@@ -1,4 +1,4 @@
-![VTS Deck Wordmark](https://cdn.greysdawn.com/img/ta5d0.png)
+![VTS Deck Wordmark](https://cdn.selenated.com/img/ta5d0.png)
 
 # VTS Deck
 **VTS Deck**, or **VTube Studio Deck**, is a third-party tool intended to make executing 
@@ -59,6 +59,6 @@ instead of just columns!
 - The built (Electron) version of this tool is currently only available for Windows
 
 ## Other Information
-If you like this tool and would like to support the devs behind it, consider [donating](https://greys-dono.carrd.co/) or sharing the tool with others <3
+If you like this tool and would like to support the devs behind it, consider [donating](https://selenated.carrd.co/#donate) or sharing the tool with others <3
 
-Need help? Feel free to open an issue here or join our [support server](https://discord.gg/EvDmXGt) on Discord
+Need help? Feel free to open an issue here or join our [support server](https://discord.gg/3y228CvJyQ) on Discord
