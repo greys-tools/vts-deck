@@ -15,7 +15,7 @@
     "build:linuxarm": "deno compile -A --no-check --target aarch64-unknown-linux-gnu -o ./dist/vtsdeck_linux_arm ./index.js",
     "build:mac64": "deno compile -A --no-check --target x86_64-apple-darwin -o ./dist/vtsdeck_mac_x86_64 ./index.js",
     "build:macarm": "deno compile -A --no-check --target aarch64-apple-darwin -o ./dist/vtsdeck_mac_arm ./index.js",
-    "build:all": "deno task build:win64 && deno task build:linux64 && deno task build:linuxarm && deno task build:mac64 && deno task build:macarm"
+    "build:all": "deno task build && deno task build:win64 && deno task build:linux64 && deno task build:linuxarm && deno task build:mac64 && deno task build:macarm"
   },
   "compile": {
     "include": [ "build" ]
