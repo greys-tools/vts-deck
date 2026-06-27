@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { EventEmitter } from 'node:events';
 
 import * as Constants from '$lib/constants';
 import HotkeyManager from '$lib/plugin/managers/HotkeyManager';
@@ -9,8 +9,10 @@ const sleep = async (ms = 500) => {
 	})
 }
 
-export default class PluginClient {
+export default class PluginClient extends EventEmitter {
 	constructor(ws, data = { apiVersion: "1.0", apiName: "VTubeStudioPublicAPI" }) {
+		super();
+
 		this.ws = ws;
 		this.apiVersion = data.apiVersion;
 		this.apiName = data.apiName;
@@ -24,10 +26,13 @@ export default class PluginClient {
 
 		this.hotkeys = new HotkeyManager(this);
 
-		this.ws.on('open', async () => {
+		this.ws.addEventListener('open', (evt) => this.emit('open', evt))
+		this.ws.addEventListener('message', (evt) => this.emit('message', evt?.data ? JSON.parse(evt.data) : {}));
+
+		this.on('open', async () => {
 			this.open = true;
 
-			this.ws.on('authed', () => clearTimeout(this.reconnect));
+			this.on('authed', () => clearTimeout(this.reconnect));
 			await this.connect();
 		})
 	}
@@ -46,7 +51,7 @@ export default class PluginClient {
 
 		console.log("Plugin connected.");
 		clearTimeout(this.reconnect)
-		this.ws.emit('ready');
+		this.emit('ready');
 	}
 
 	async auth() {
@@ -80,7 +85,7 @@ export default class PluginClient {
 		} else {
 			this.token = token;
 			this.ready = true;
-			this.ws.emit('authed', { token });
+			this.emit('authed', { token });
 			return { success: true, token };
 		}
 	}
@@ -88,11 +93,6 @@ export default class PluginClient {
 	randomID(len = 5) {
 		var str = (Math.random() + 1).toString(36).slice(2, len + 2);
 		return str;
-	}
-
-	decodeMessage(msg) {
-		msg = JSON.parse(msg.toString('utf8'));
-		return msg;
 	}
 
 	async sendRequest(type, data) {
@@ -112,21 +112,18 @@ export default class PluginClient {
 		if(this.debug) console.log(`[debug] Awaiting message with ID ${id}`);
 		return new Promise((res, rej) => {
 			const messageHandler = async (msg) => {
-				msg = this.decodeMessage(msg);
 				if(msg.requestID !== id) return;
 
 				if(this.debug) console.log(`[debug] Received message with ID ${id}:\n`, msg);
-				this.ws.removeListener('message', messageHandler);
-				this.ws.removeEventListener('message', messageHandler);
+				this.removeListener("messsage", messageHandler);
 				clearTimeout(tm);
 				return res(msg);
 			}
 
-			this.ws.on('message', messageHandler);
+			this.on('message', messageHandler);
 			let tm = setTimeout(() => {
 				if(this.debug) console.log(`[debug] Message listener timed out while listening for message with ID ${id}`);
-				this.ws.removeListener('message', messageHandler)
-				this.ws.removeEventListener('message', messageHandler)
+				this.removeListener("messsage", messageHandler);
 				return rej({ error: 'Timed out.' })
 			}, timeout);
 		})
@@ -135,7 +132,7 @@ export default class PluginClient {
 	async awaitReady() {
 		if(this.ready) return true;
 		return new Promise((res) => {
-			this.ws.once('authed', () => res());
+			this.once('authed', () => res());
 		})
 	}
 }

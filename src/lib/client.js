@@ -1,4 +1,3 @@
-import WebSocket from 'ws';
 import PluginClient from '$lib/plugin/client';
 
 import {
@@ -21,7 +20,7 @@ const init = (token) => {
 		pluginDeveloper,
 		pluginName,
 		pluginIcon,
-		debug: true
+		debug: false
 	});
 }
 
