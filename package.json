@@ -9,7 +9,13 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:win64": "deno compile -A --no-check --target x86_64-pc-windows-msvc -o ./dist/vtsdeck_win_x86_64 ./index.js",
+    "build:linux64": "deno compile -A --no-check --target x86_64-unknown-linux-gnu -o ./dist/vtsdeck_linux_x86_64 ./index.js",
+    "build:linuxarm": "deno compile -A --no-check --target aarch64-unknown-linux-gnu -o ./dist/vtsdeck_linux_arm ./index.js",
+    "build:mac64": "deno compile -A --no-check --target x86_64-apple-darwin -o ./dist/vtsdeck_mac_x86_64 ./index.js",
+    "build:macarm": "deno compile -A --no-check --target aarch64-apple-darwin -o ./dist/vtsdeck_mac_arm ./index.js",
+    "build:all": "deno task build:win64 && deno task build:linux64 && deno task build:linuxarm && deno task build:mac64 && deno task build:macarm"
   },
   "compile": {
     "include": [ "build" ]
